@@ -3,6 +3,7 @@ import pytz
 from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
+import telegram_reminder
 from habits.models import Habit
 from telegram_reminder.services import send_message
 
@@ -27,15 +28,12 @@ def message():
             and now_time >= habit_datetime - timedelta(minutes=10)
             and now_time <= habit_datetime + timedelta(minutes=10)
         ):
-            message = (f'Напоминание: Необходимо выполнить {habit.action} в '
-                       f'{habit.time.strftime('%H:%M')} в {habit.place}')
+            message = telegram_reminder.reminder_message
             send_message(user_tg, message)
 
             if habit.award:
-                send_message(
-                    user_tg, f'После выполнения получите награду:'
-                             f' {habit.award}'
-                )
+                message = telegram_reminder.award_message
+                send_message(user_tg, message)
 
             # Следующий день сдвигается по periodicity
             next_datetime = habit_datetime + timedelta(days=habit.periodicity)

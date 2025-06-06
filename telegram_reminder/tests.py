@@ -12,8 +12,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class TelegramServiceTestCase(APITestCase):
-    '''Тесты для сервиса отправки уведомлений в Telegram'''
+class TelegramReminderCase(APITestCase):
+    '''Тесты приложения для отправки напоминаний в Telegram'''
 
     @patch('habits.services.requests.get')
     def test_send_successful_message(self, mock_get):
@@ -39,7 +39,7 @@ class TelegramServiceTestCase(APITestCase):
         mock_get.assert_called_once()
 
 
-class TelegramMessageTaskTests(APITestCase):
+class TelegramReminderTaskCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email='testuser@gmail.com',
