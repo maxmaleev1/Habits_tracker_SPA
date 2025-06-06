@@ -4,7 +4,7 @@ import pytz
 import requests
 from django.conf import settings
 from telegram_reminder.services import send_message
-from habits.tasks import message
+from telegram_reminder.tasks import message
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 
