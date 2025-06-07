@@ -7,20 +7,19 @@ class TelegramReminder(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='habits',
+        related_name='habits_reminder',
     )
     habit = models.ForeignKey(
         'habits.Habit',
         on_delete=models.CASCADE,
         related_name='reminders'
     ),
-    reminder_message=models.TextField(
-        f'Напоминание: Необходимо выполнить'
-                             f' {Habit.action} в '
-                 f'{Habit.time.strftime('%H:%M')} в {Habit.place}'
+    reminder_text=models.TextField(
+        f'Напоминание: Необходимо выполнить {Habit.action} в'
+        f' {Habit.time} в {Habit.place}'
     ),
-    award_message=models.TextField(
-        f'После выполнения получите награду:'f' {Habit.award}'
+    award_text=models.TextField(
+        f'После выполнения получите награду: {Habit.award}'
     )
 
     def __str__(self):

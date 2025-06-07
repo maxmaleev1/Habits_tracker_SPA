@@ -3,8 +3,10 @@ from unittest.mock import patch
 import pytz
 import requests
 from django.conf import settings
+
+from habits.models import Habit
 from telegram_reminder.services import send_message
-from telegram_reminder.tasks import message
+from telegram_reminder.tasks import send_reminders
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 
@@ -65,7 +67,7 @@ class TelegramReminderTaskCase(APITestCase):
     def test_message_sends_and_updates_time(self, mock_send):
         old_time = self.habit.time
 
-        message()
+        send_reminders()
 
         self.habit.refresh_from_db()
 

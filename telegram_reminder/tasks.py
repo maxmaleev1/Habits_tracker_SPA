@@ -1,42 +1,66 @@
-from datetime import datetime, timedelta
-import pytz
 from celery import shared_task
+from datetime import datetime, timedelta
+from pytz import timezone
+from django.utils import timezone as dj_timezone
 from django.conf import settings
-from django.utils import timezone
 from habits.models import Habit
 from telegram_reminder.models import TelegramReminder
 from telegram_reminder.services import send_message
+import time
 
 
-@shared_task()
-def message():
-    timezone.activate(pytz.timezone(settings.CELERY_TIMEZONE))
-    zone = pytz.timezone(settings.CELERY_TIMEZONE)
-    now_time = datetime.now(zone)
+@shared_task
+def send_reminders():
+    """
+    Отправляет напоминания пользователям по привычкам, если текущее время
+    попадает в заданный интервал. Также отправляет сообщение с наградой,
+    если оно предусмотрено, и сдвигает время привычки вперёд по periodicity.
+    """
+    dj_timezone.activate(timezone(settings.CELERY_TIMEZONE))  # активация
+    # таймзоны
 
-    reminder_message = TelegramReminder.objects.reminder_message
-    award_message = TelegramReminder.objects.award_message
-    habits = Habit.objects.all()
+    now = dj_timezone.localtime()  # получение текущего локального времени
 
-    for habit in habits:
-        user_tg = habit.user.telegram_id
+    lower_bound = now - timedelta(minutes=10)  # нижняя граница по времени
+    upper_bound = now + timedelta(minutes=10)  # верхняя граница по времени
 
-        # Собираем datetime из даты сегодня и времени из habit.time
-        habit_datetime = datetime.combine(now_time.date(), habit.time)
-        habit_datetime = zone.localize(habit_datetime)
+    habits = Habit.objects.filter(  # выборка привычек в интервале времени
+        time__gte=lower_bound.time(),
+        time__lte=upper_bound.time()
+    )
 
-        if (
-            user_tg
-            and now_time >= habit_datetime - timedelta(minutes=10)
-            and now_time <= habit_datetime + timedelta(minutes=10)
-        ):
+    for habit in habits:  # перебор всех подходящих привычек
+        user = habit.user  # получение пользователя
 
-            send_message(user_tg, reminder_message)
+        if not hasattr(user, 'telegram_id') or not user.telegram_id:
+            continue  # пропустить, если нет telegram_id
 
-            if habit.award:
-                send_message(user_tg, award_message)
+        reminder = TelegramReminder.objects.get(  # получить объект напоминания
+            user=user,
+            habit=habit
+        )
 
-            # Следующий день сдвигается по periodicity
+        reminder_text = reminder.reminder_text  # текст напоминания
+
+        try:
+            send_message(user.telegram_id, reminder_text)
+            print(f"[OK] Напоминание отправлено пользователю {user.email}")
+
+            if habit.award:  # если указана награда
+                time.sleep(120)  # пауза 2 минуты
+                award_text = reminder.award_text  # текст награды
+                send_message(user.telegram_id, award_text)  # отправка награды
+                print(
+                    f"[OK] Сообщение с наградой отправлено пользователю "
+                    f"{user.email}"
+                )
+
+            habit_datetime = datetime.combine(now.date(), habit.time)
+            # объединение даты и времени привычки
             next_datetime = habit_datetime + timedelta(days=habit.periodicity)
-            habit.time = next_datetime.time()
-            habit.save()
+            # расчёт следующего напоминания
+            habit.time = next_datetime.time()  # установка нового времени
+            habit.save()  # сохранение изменений
+
+        except Exception as e:
+            print(f"[ERROR] Не удалось отправить сообщение: {e}")
