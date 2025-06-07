@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 import telegram_reminder
 from habits.models import Habit
+from telegram_reminder.models import TelegramReminder
 from telegram_reminder.services import send_message
 
 
@@ -28,11 +29,11 @@ def message():
             and now_time >= habit_datetime - timedelta(minutes=10)
             and now_time <= habit_datetime + timedelta(minutes=10)
         ):
-            message = telegram_reminder.reminder_message
+            message = TelegramReminder.objects.get(reminder_message)
             send_message(user_tg, message)
 
             if habit.award:
-                message = telegram_reminder.award_message
+                message = TelegramReminder.objects.get(award_message)
                 send_message(user_tg, message)
 
             # Следующий день сдвигается по periodicity
