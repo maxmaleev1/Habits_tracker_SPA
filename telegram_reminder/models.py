@@ -16,11 +16,11 @@ class TelegramReminder(models.Model):
     ),
     reminder_message=models.TextField(
         f'Напоминание: Необходимо выполнить'
-                             f' {habit.action} в '
-                 f'{habit.time.strftime('%H:%M')} в {habit.place}'
+                             f' {Habit.action} в '
+                 f'{Habit.time.strftime('%H:%M')} в {Habit.place}'
     ),
     award_message=models.TextField(
-        f'После выполнения получите награду:'f' {habit.award}'
+        f'После выполнения получите награду:'f' {Habit.award}'
     )
 
     def __str__(self):

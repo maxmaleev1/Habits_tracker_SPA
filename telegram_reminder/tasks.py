@@ -14,6 +14,8 @@ def message():
     zone = pytz.timezone(settings.CELERY_TIMEZONE)
     now_time = datetime.now(zone)
 
+    reminder_message = TelegramReminder.objects.reminder_message
+    award_message = TelegramReminder.objects.award_message
     habits = Habit.objects.all()
 
     for habit in habits:
@@ -28,12 +30,11 @@ def message():
             and now_time >= habit_datetime - timedelta(minutes=10)
             and now_time <= habit_datetime + timedelta(minutes=10)
         ):
-            message = TelegramReminder.objects.get(reminder_message)
-            send_message(user_tg, message)
+
+            send_message(user_tg, reminder_message)
 
             if habit.award:
-                message = TelegramReminder.objects.get(award_message)
-                send_message(user_tg, message)
+                send_message(user_tg, award_message)
 
             # Следующий день сдвигается по periodicity
             next_datetime = habit_datetime + timedelta(days=habit.periodicity)
