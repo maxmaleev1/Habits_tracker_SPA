@@ -3,7 +3,6 @@ import pytz
 from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
-import telegram_reminder
 from habits.models import Habit
 from telegram_reminder.models import TelegramReminder
 from telegram_reminder.services import send_message
