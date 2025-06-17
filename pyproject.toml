@@ -3,7 +3,7 @@ name = "habits-tracker-spa"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Максим Малеев",email = "mmaleev1@gmail.com"}
+    {name = "Максим Малеев", email = "mmaleev1@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.10,<3.12"
@@ -25,7 +25,14 @@ dependencies = [
     "flake8 (>=7.2.0,<8.0.0)"
 ]
 
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [
+    { include = "config" },
+    { include = "habits" },
+    { include = "telegram_reminder" },
+    { include = "users" }
+]
