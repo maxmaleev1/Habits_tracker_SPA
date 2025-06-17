@@ -14,11 +14,11 @@ class TelegramReminder(models.Model):
         on_delete=models.CASCADE,
         related_name='reminders'
     ),
-    reminder_text=models.TextField(
+    reminder_text = models.TextField(
         f'Напоминание: Необходимо выполнить {Habit.action} в'
         f' {Habit.time} в {Habit.place}'
     ),
-    award_text=models.TextField(
+    award_text = models.TextField(
         f'После выполнения получите награду: {Habit.award}'
     )
 

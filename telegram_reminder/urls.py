@@ -2,6 +2,7 @@ from django.urls import path
 from .apps import TelegramReminderConfig
 from .services import send_message
 
+
 app_name = TelegramReminderConfig.name
 
 urlpatterns = [

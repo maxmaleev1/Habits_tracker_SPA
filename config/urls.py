@@ -23,7 +23,7 @@ urlpatterns = [
     path('habits/', include('habits.urls', namespace='habits')),
     path('users/', include('users.urls', namespace='users')),
     path(
-        'telegram_reminder/',include(
+        'telegram_reminder/', include(
             'telegram_reminder.urls', namespace='telegram_reminder'
         )
     ),
