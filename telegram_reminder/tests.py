@@ -8,6 +8,7 @@ from telegram_reminder.services import send_message
 from telegram_reminder.tasks import send_reminders
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
+from telegram_reminder.models import TelegramReminder
 
 
 User = get_user_model()
@@ -60,6 +61,13 @@ class TelegramReminderTaskCase(APITestCase):
             action='Разминка',
             duration=60,
             periodicity=1,
+        )
+
+        self.reminder = TelegramReminder.objects.create(
+            user=self.user,
+            habit=self.habit,
+            reminder_text='Сделай разминку!',
+            award_text='Молодец, награда!'
         )
 
     @patch('telegram_reminder.tasks.send_message')
