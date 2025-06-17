@@ -4,5 +4,8 @@ exclude =
     */__pycache__/*,
     */static/*,
     */templates/*,
-    settings.py,
-    .venv/*,
+    settings.py
+    .git,
+    __pycache__,
+    *.pyc,
+    *.yml

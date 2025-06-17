@@ -62,15 +62,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOST'),
-        'PORT': os.getenv('DATABASE_PORT'),
-        'OPTIONS': {'client_encoding': 'utf8'}
-    },
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",  # Бэкенд PostgreSQL
+        "NAME": os.getenv("POSTGRES_DB", "postgres"),  # Название БД
+        "USER": os.getenv("POSTGRES_USER", "postgres"),  # Имя пользователя
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),  # Пароль
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),  # Адрес хоста БД
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),  # Порт PostgreSQL
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
