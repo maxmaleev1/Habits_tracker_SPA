@@ -3,7 +3,6 @@ from unittest.mock import patch
 import pytz
 import requests
 from django.conf import settings
-
 from habits.models import Habit
 from telegram_reminder.services import send_message
 from telegram_reminder.tasks import send_reminders
@@ -17,14 +16,14 @@ User = get_user_model()
 class TelegramReminderCase(APITestCase):
     '''Тесты приложения для отправки напоминаний в Telegram'''
 
-    @patch('habits.services.requests.get')
+    @patch('telegram_reminder.services.requests.get')
     def test_send_successful_message(self, mock_get):
         mock_get.return_value.status_code = 200
         result = send_message('12345', 'Test')
         self.assertTrue(result)
         mock_get.assert_called_once()
 
-    @patch('habits.services.requests.get')
+    @patch('telegram_reminder.services.requests.get')
     def test_send_message_connection_error(self, mock_get):
         mock_get.side_effect = requests.RequestException('Connection failed')
 
