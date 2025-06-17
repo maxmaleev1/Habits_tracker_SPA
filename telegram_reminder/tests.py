@@ -62,7 +62,7 @@ class TelegramReminderTaskCase(APITestCase):
             periodicity=1,
         )
 
-    @patch('habits.tasks.send_message')
+    @patch('telegram_reminder.tasks.send_message')
     def test_message_sends_and_updates_time(self, mock_send):
         old_time = self.habit.time
 
