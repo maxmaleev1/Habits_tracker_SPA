@@ -35,10 +35,16 @@ def send_reminders():
         if not hasattr(user, 'telegram_id') or not user.telegram_id:
             continue  # пропустить, если нет telegram_id
 
-        reminder = TelegramReminder.objects.get(  # получить объект напоминания
+        reminder = TelegramReminder.objects.filter(
             user=user,
             habit=habit
-        )
+        ).first()  # вернёт None, если ничего не найдено
+
+        if not reminder:
+            print(
+                f"[WARN] Нет TelegramReminder для пользователя {user.email} "
+                f"и привычки {habit}")
+            continue
 
         reminder_text = reminder.reminder_text  # текст напоминания
 
