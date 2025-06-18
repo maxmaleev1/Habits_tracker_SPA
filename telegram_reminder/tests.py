@@ -52,7 +52,7 @@ class TelegramReminderTaskCase(APITestCase):
 
         # Время привычки = сейчас + 5 минут (чтобы попало в окно 10 минут)
         now = timezone.now()
-        habit_time = (now + timedelta(minutes=5)).time()
+        habit_time = now.time()
 
         self.habit = Habit.objects.create(
             user=self.user,
