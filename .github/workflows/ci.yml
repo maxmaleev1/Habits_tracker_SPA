@@ -130,6 +130,10 @@ jobs:
             git pull origin develop                # 🔄 Обновление кода
             docker-compose pull                    # 📥 Обновление образов
             docker-compose down                    # ⛔️ Остановка старого
-            docker rm -f redis || true             # 💥 Принудительное удаление, если вдруг остался
-            docker rm -f db || true
-            docker-compose up -d --force-recreate --remove-orphans  # 🚀 Запуск нового
+
+            # 💣 Очистка "висячих" контейнеров, если остались
+            docker rm -f $(docker ps -aqf "name=redis") || true
+            docker rm -f $(docker ps -aqf "name=db") || true
+
+            # 🚀 Запуск нового
+            docker-compose up -d --force-recreate --remove-orphans
