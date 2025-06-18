@@ -130,10 +130,13 @@ jobs:
             git pull origin develop                # 🔄 Обновление кода
             docker-compose pull                    # 📥 Обновление образов
             docker-compose down                    # ⛔️ Остановка старого
-
-            # 💣 Очистка "висячих" контейнеров, если остались
-            docker rm -f $(docker ps -aqf "name=redis") || true
-            docker rm -f $(docker ps -aqf "name=db") || true
-
+            
+            # 💣 Безопасная очистка "висячих" контейнеров, если остались
+            REDIS_ID=$(docker ps -aqf "name=redis")
+            if [ -n "$REDIS_ID" ]; then docker rm -f "$REDIS_ID"; fi
+            
+            DB_ID=$(docker ps -aqf "name=db")
+            if [ -n "$DB_ID" ]; then docker rm -f "$DB_ID"; fi
+            
             # 🚀 Запуск нового
             docker-compose up -d --force-recreate --remove-orphans
