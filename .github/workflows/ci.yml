@@ -126,8 +126,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/${{ secrets.SSH_USER }}/habits_project  # путь к папке на сервере с проектом
-            git pull origin main  # или нужную ветку
-            docker-compose pull
-            docker-compose down
-            docker-compose up -d --remove-orphans
+            cd /home/${{ secrets.SSH_USER }}/Habits_tracker_SPA #Путь к проекту
+            git pull origin main                # 🔄 Обновление кода
+            docker-compose pull                 # 📥 Обновление образов
+            docker-compose down                 # ⛔️ Остановка старого
+            docker-compose up -d --remove-orphans  # 🚀 Запуск нового
