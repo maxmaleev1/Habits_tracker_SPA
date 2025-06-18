@@ -1,22 +1,22 @@
-# Используем официальный образ Python
 FROM python:3.10-slim
 
-# Устанавливаем рабочую директорию
+# Устанавливаем Poetry
+RUN pip install --no-cache-dir "poetry==1.6.1"
+
+# Создаём директорию приложения
 WORKDIR /app
 
-# Устанавливаем Poetry
-RUN pip install --no-cache-dir poetry==1.7.1
-
-# Копируем файлы зависимостей в контейнер
-COPY pyproject.toml poetry.lock* ./
-
-# Отключаем создание виртуального окружения и устанавливаем только основные зависимости
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-root --only main --no-interaction --no-ansi
-
-# Копируем оставшиеся файлы проекта
+# Копируем весь проект сразу (в том числе папки с кодом)
 COPY . .
 
-# Команда по умолчанию при запуске контейнера
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Отключаем виртуальные окружения и устанавливаем зависимости (только main)
+RUN poetry config virtualenvs.create false \
+  && poetry install --only main --no-interaction --no-ansi
 
+# Собираем статику (для nginx)
+RUN python manage.py collectstatic --noinput
+
+
+# Открываем порт и задаём команду по умолчанию
+EXPOSE 8000
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
