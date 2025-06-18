@@ -1,24 +1,22 @@
-# Используем минимальный Python-образ
+# Используем официальный образ Python
 FROM python:3.10-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
 
 # Устанавливаем Poetry
 RUN pip install --no-cache-dir poetry==1.7.1
 
-# Устанавливаем рабочую директорию внутри контейнера
-WORKDIR /app
-
-# Копируем зависимости
+# Копируем файлы зависимостей в контейнер
 COPY pyproject.toml poetry.lock* ./
 
-# Устанавливаем зависимости без dev
+# Отключаем создание виртуального окружения и устанавливаем только основные зависимости
 RUN poetry config virtualenvs.create false \
-    && poetry install --only main --no-interaction --no-ansi
+    && poetry install --no-root --only main --no-interaction --no-ansi
 
-# Копируем весь проект
+# Копируем оставшиеся файлы проекта
 COPY . .
 
-# Открываем порт (если будет использоваться)
-EXPOSE 8000
+# Команда по умолчанию при запуске контейнера
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# Команда запуска
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

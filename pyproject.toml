@@ -4,7 +4,12 @@ version = "0.1.0"
 description = ""
 authors = ["Максим Малеев <mmaleev1@gmail.com>"]
 readme = "README.md"
-package-mode = false
+packages = [
+    { include = "config" },
+    { include = "habits" },
+    { include = "telegram_reminder" },
+    { include = "users" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
