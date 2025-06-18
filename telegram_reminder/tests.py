@@ -9,6 +9,7 @@ from telegram_reminder.tasks import send_reminders
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 from telegram_reminder.models import TelegramReminder
+from django.utils import timezone
 
 
 User = get_user_model()
@@ -50,8 +51,7 @@ class TelegramReminderTaskCase(APITestCase):
         )
 
         # Время привычки = сейчас + 5 минут (чтобы попало в окно 10 минут)
-        zone = pytz.timezone(settings.CELERY_TIMEZONE)
-        now = datetime.now(zone)
+        now = timezone.now()
         habit_time = (now + timedelta(minutes=5)).time()
 
         self.habit = Habit.objects.create(
