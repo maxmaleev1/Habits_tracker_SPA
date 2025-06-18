@@ -130,4 +130,5 @@ jobs:
             git pull origin main                # 🔄 Обновление кода
             docker-compose pull                 # 📥 Обновление образов
             docker-compose down                 # ⛔️ Остановка старого
-            docker-compose up -d --remove-orphans  # 🚀 Запуск нового
+            docker-compose up -d --force-recreate --remove-orphans
+            # 🚀 Запуск нового
