@@ -126,9 +126,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/${{ secrets.SSH_USER }}/Habits_tracker_SPA #Путь к проекту
-            git pull origin main                # 🔄 Обновление кода
-            docker-compose pull                 # 📥 Обновление образов
-            docker-compose down                 # ⛔️ Остановка старого
-            docker-compose up -d --force-recreate --remove-orphans
-            # 🚀 Запуск нового
+            cd /home/${{ secrets.SSH_USER }}/Habits_tracker_SPA
+            git pull origin develop                # 🔄 Обновление кода
+            docker-compose pull                    # 📥 Обновление образов
+            docker-compose down                    # ⛔️ Остановка старого
+            docker rm -f redis || true             # 💥 Принудительное удаление, если вдруг остался
+            docker rm -f db || true
+            docker-compose up -d --force-recreate --remove-orphans  # 🚀 Запуск нового
