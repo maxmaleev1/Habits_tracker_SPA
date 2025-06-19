@@ -134,3 +134,10 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 # Переменная с флагом False запрещает заходить с других доменов
 CORS_ALLOW_ALL_ORIGINS = False
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
